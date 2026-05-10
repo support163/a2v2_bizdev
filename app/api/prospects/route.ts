@@ -36,6 +36,16 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'clinic_name is required' }, { status: 400 })
     }
 
+    const { data: existing } = await supabase
+      .from('prospects')
+      .select('id, clinic_name')
+      .ilike('clinic_name', clinic_name)
+      .limit(1)
+
+    if (existing && existing.length > 0) {
+      return NextResponse.json({ error: 'duplicate', message: `Prospect "${clinic_name}" already exists`, existing: existing[0] }, { status: 409 })
+    }
+
     const { data, error } = await supabase
       .from('prospects')
       .insert([
