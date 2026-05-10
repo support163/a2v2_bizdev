@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 
 function getSupabase() {
@@ -8,7 +8,7 @@ function getSupabase() {
   )
 }
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const supabase = getSupabase()
     const statuses = ['new', 'contacted', 'responded', 'meeting', 'proposal', 'closed_won', 'closed_lost']
