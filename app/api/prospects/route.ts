@@ -9,9 +9,9 @@ function getSupabase() {
 }
 
 // GET - fetch all prospects with optional filtering
-export async function GET(request: NextRequest) {
+export async function GET(req: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url)
+    const { searchParams } = new URL(req.url)
     const status = searchParams.get('status')
     const supabase = getSupabase()
 
