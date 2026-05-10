@@ -17,10 +17,29 @@ export default function ProspectsPage() {
   const [prospects, setProspects] = useState<Prospect[]>([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState<string>('')
+  const [sortColumn, setSortColumn] = useState<keyof Prospect>('created_at')
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc')
 
   useEffect(() => {
     fetchProspects()
   }, [filter])
+
+  const handleSort = (column: keyof Prospect) => {
+    if (sortColumn === column) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')
+    } else {
+      setSortColumn(column)
+      setSortDirection('asc')
+    }
+  }
+
+  const sortedProspects = [...prospects].sort((a, b) => {
+    const aVal = a[sortColumn] ?? ''
+    const bVal = b[sortColumn] ?? ''
+    if (aVal < bVal) return sortDirection === 'asc' ? -1 : 1
+    if (aVal > bVal) return sortDirection === 'asc' ? 1 : -1
+    return 0
+  })
 
   const fetchProspects = async () => {
     try {
@@ -88,16 +107,26 @@ export default function ProspectsPage() {
           <table className="w-full">
             <thead className="bg-gray-100 border-b">
               <tr>
-                <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">Clinic Name</th>
-                <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">Contact</th>
-                <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">Email</th>
-                <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">Location</th>
-                <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">Status</th>
+                {([
+                  ['clinic_name', 'Clinic Name'],
+                  ['contact_name', 'Contact'],
+                  ['email', 'Email'],
+                  ['location', 'Location'],
+                  ['status', 'Status'],
+                ] as [keyof Prospect, string][]).map(([key, label]) => (
+                  <th
+                    key={key}
+                    onClick={() => handleSort(key)}
+                    className="px-6 py-3 text-left text-sm font-medium text-gray-700 cursor-pointer hover:bg-gray-200 select-none"
+                  >
+                    {label} {sortColumn === key ? (sortDirection === 'asc' ? ' ▲' : ' ▼') : ''}
+                  </th>
+                ))}
                 <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">Action</th>
               </tr>
             </thead>
             <tbody className="divide-y">
-              {prospects.map((prospect) => (
+              {sortedProspects.map((prospect) => (
                 <tr key={prospect.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 text-sm text-gray-900 font-medium">{prospect.clinic_name}</td>
                   <td className="px-6 py-4 text-sm text-gray-600">{prospect.contact_name || '—'}</td>
