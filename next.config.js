@@ -1,7 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  outputFileTracingRoot: __dirname,
+  swcMinify: true,
+  productionBrowserSourceMaps: false,
+  experimental: {
+    optimizePackageImports: ['@supabase/supabase-js'],
+  },
 }
 
 module.exports = nextConfig
