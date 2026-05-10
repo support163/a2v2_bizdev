@@ -1,13 +1,20 @@
-import { createClient } from '@supabase/supabase-js'
+import { createClient, SupabaseClient } from '@supabase/supabase-js'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
+let supabaseInstance: SupabaseClient | null = null
 
-if (!supabaseUrl || !supabaseKey) {
-  console.warn('Missing Supabase credentials:', { supabaseUrl, supabaseKey })
+export function getSupabaseClient() {
+  if (supabaseInstance) return supabaseInstance
+
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
+
+  if (!url || !key) {
+    throw new Error('Missing Supabase credentials')
+  }
+
+  supabaseInstance = createClient(url, key)
+  return supabaseInstance
 }
-
-export const supabase = createClient(supabaseUrl || '', supabaseKey || '')
 
 export type Prospect = {
   id: number

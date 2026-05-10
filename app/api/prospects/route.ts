@@ -1,19 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
-
-function getSupabase() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL || '',
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || ''
-  )
-}
+import { getSupabaseClient } from '@/lib/supabase'
 
 // GET - fetch all prospects with optional filtering
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url)
     const status = searchParams.get('status')
-    const supabase = getSupabase()
+    const supabase = getSupabaseClient()
 
     let query = supabase.from('prospects').select('*').order('created_at', { ascending: false })
 
@@ -37,7 +30,7 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
     const { clinic_name, contact_name, email, linkedin, location, specialty, notes } = body
-    const supabase = getSupabase()
+    const supabase = getSupabaseClient()
 
     if (!clinic_name) {
       return NextResponse.json({ error: 'clinic_name is required' }, { status: 400 })

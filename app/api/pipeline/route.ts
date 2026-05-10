@@ -1,16 +1,9 @@
 import { NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
-
-function getSupabase() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL || '',
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || ''
-  )
-}
+import { getSupabaseClient } from '@/lib/supabase'
 
 export async function GET() {
   try {
-    const supabase = getSupabase()
+    const supabase = getSupabaseClient()
     const statuses = ['new', 'contacted', 'responded', 'meeting', 'proposal', 'closed_won', 'closed_lost']
     const summary = []
 
