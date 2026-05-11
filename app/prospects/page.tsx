@@ -8,6 +8,7 @@ interface Prospect {
   clinic_name: string
   contact_name: string | null
   email: string | null
+  linkedin: string | null
   location: string | null
   status: string
   created_at: string
@@ -111,6 +112,7 @@ export default function ProspectsPage() {
                   ['clinic_name', 'Clinic Name'],
                   ['contact_name', 'Contact'],
                   ['email', 'Email'],
+                  ['linkedin', 'LinkedIn'],
                   ['location', 'Location'],
                   ['status', 'Status'],
                 ] as [keyof Prospect, string][]).map(([key, label]) => (
@@ -134,6 +136,15 @@ export default function ProspectsPage() {
                     {prospect.email ? (
                       <a href={`mailto:${prospect.email}`} className="text-blue-600 hover:underline">
                         {prospect.email}
+                      </a>
+                    ) : (
+                      '—'
+                    )}
+                  </td>
+                  <td className="px-6 py-4 text-sm text-gray-600">
+                    {prospect.linkedin ? (
+                      <a href={prospect.linkedin} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                        View
                       </a>
                     ) : (
                       '—'
